@@ -1,13 +1,17 @@
 package com.example.courseApp_backend.controller;
 
+import com.example.courseApp_backend.dao.CourseDao;
 import com.example.courseApp_backend.model.Course;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 public class CourseController {
+    @Autowired
+    private CourseDao dao;
+    @CrossOrigin(origins = "*")
     @PostMapping(path = "/add",consumes = "application/json",produces = "application/json")
     public String addCourse(@RequestBody Course c){
         System.out.println(c.getCourseTitle().toString());
@@ -15,11 +19,14 @@ public class CourseController {
         System.out.println(c.getCourseVenue().toString());
         System.out.println(c.getCourseDuration().toString());
         System.out.println(c.getCourseDate().toString());
+
+        dao.save(c);
         return "Course added successfully";
     }
 
+    @CrossOrigin(origins = "*")
     @GetMapping("/viewall")
-    public String viewAll(){
-        return "view all the courses";
+    public List<Course> viewAll(){
+        return (List<Course>) dao.findAll();
     }
 }
